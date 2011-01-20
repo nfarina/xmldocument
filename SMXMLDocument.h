@@ -1,5 +1,5 @@
 
-// Thanks Apple, for not just exposing NSXMLDocument!
+// SMXMLDocument is a very handy lightweight XML parser for iOS.
 
 #ifdef __IPHONE_4_0
 @interface SMXMLElement : NSObject<NSXMLParserDelegate> {
