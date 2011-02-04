@@ -131,7 +131,8 @@
 @synthesize root;
 
 - (id)initWithData:(NSData *)data {
-	if ([super init]) {
+    self = [super init];
+	if (self) {
 		NSXMLParser *parser = [[[NSXMLParser alloc] initWithData:data] autorelease];
 		[parser setDelegate:self];
 		[parser setShouldProcessNamespaces:YES];
