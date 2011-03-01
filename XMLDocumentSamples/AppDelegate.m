@@ -10,7 +10,7 @@
 	NSData *data = [NSData dataWithContentsOfFile:sampleXML];
 	
 	// create a new SMXMLDocument with the contents of sample.xml
-	SMXMLDocument *document = [SMXMLDocument documentWithData:data];
+	SMXMLDocument *document = [SMXMLDocument documentWithData:data error:NULL];
 
 	// demonstrate -description of document/element classes
 	NSLog(@"Document:\n %@", document);
