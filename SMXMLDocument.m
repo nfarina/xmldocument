@@ -1,9 +1,8 @@
 #import "SMXMLDocument.h"
 
-NSString *const SMXMLDocumentErrorDomain = @"SMXMLDocumentErrorDomain";
+NSString *SMXMLDocumentErrorDomain = @"SMXMLDocumentErrorDomain";
 
-static NSError * SMXMLDocumentError(NSXMLParser *parser, NSError *parseError)
-{
+static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {	
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:parseError forKey:NSUnderlyingErrorKey];
 	NSNumber *lineNumber = [NSNumber numberWithInteger:parser.lineNumber];
 	NSNumber *columnNumber = [NSNumber numberWithInteger:parser.columnNumber];
@@ -17,10 +16,8 @@ static NSError * SMXMLDocumentError(NSXMLParser *parser, NSError *parseError)
 @synthesize document, parent, name, value, children, attributes;
 
 - (id)initWithDocument:(SMXMLDocument *)aDocument {
-	self = [super init];
-	if (self) {
+	if ([super init])
 		self.document = aDocument;
-	}
 	return self;
 }
 
