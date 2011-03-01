@@ -1,6 +1,6 @@
 #import "SMXMLDocument.h"
 
-NSString *SMXMLDocumentErrorDomain = @"SMXMLDocumentErrorDomain";
+NSString *const SMXMLDocumentErrorDomain = @"SMXMLDocumentErrorDomain";
 
 static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {	
 	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:parseError forKey:NSUnderlyingErrorKey];
@@ -16,7 +16,8 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 @synthesize document, parent, name, value, children, attributes;
 
 - (id)initWithDocument:(SMXMLDocument *)aDocument {
-	if ([super init])
+	self = [super init];
+	if (self)
 		self.document = aDocument;
 	return self;
 }
