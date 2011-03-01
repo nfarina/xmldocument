@@ -24,6 +24,10 @@
 
 // SMXMLDocument is a very handy lightweight XML parser for iOS.
 
+extern NSString *const SMXMLDocumentErrorDomain;
+
+@class SMXMLDocument;
+
 #ifdef __IPHONE_4_0
 @interface SMXMLElement : NSObject<NSXMLParserDelegate> {
 #else
@@ -31,6 +35,7 @@
 #endif
 
 @private
+	SMXMLDocument *document; // nonretained
 	SMXMLElement *parent; // nonretained
 	NSString *name;
 	NSMutableString *value;
@@ -38,6 +43,7 @@
 	NSDictionary *attributes;
 }
 
+@property (nonatomic, assign) SMXMLDocument *document;
 @property (nonatomic, assign) SMXMLElement *parent;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, retain) NSString *value;
@@ -45,6 +51,7 @@
 @property (nonatomic, readonly) SMXMLElement *firstChild, *lastChild;
 @property (nonatomic, retain) NSDictionary *attributes;
 
+- (id)initWithDocument:(SMXMLDocument *)document;
 - (SMXMLElement *)childNamed:(NSString *)name;
 - (NSArray *)childrenNamed:(NSString *)name;
 - (SMXMLElement *)childWithAttribute:(NSString *)attributeName value:(NSString *)attributeValue;
@@ -62,12 +69,14 @@
 	
 @private
 	SMXMLElement *root;
+	NSError *error;
 }
 
 @property (nonatomic, retain) SMXMLElement *root;
+@property (nonatomic, retain) NSError *error;
 
-- (id)initWithData:(NSData *)data;
+- (id)initWithData:(NSData *)data error:(NSError **)outError;
 
-+ (SMXMLDocument *)documentWithData:(NSData *)data;
++ (SMXMLDocument *)documentWithData:(NSData *)data error:(NSError **)outError;
 
 @end

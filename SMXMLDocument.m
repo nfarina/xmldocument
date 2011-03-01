@@ -1,9 +1,31 @@
 #import "SMXMLDocument.h"
 
+NSString *const SMXMLDocumentErrorDomain = @"SMXMLDocumentErrorDomain";
+
+static NSError * SMXMLDocumentError(NSXMLParser *parser, NSError *parseError)
+{
+	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObject:parseError forKey:NSUnderlyingErrorKey];
+	NSNumber *lineNumber = [NSNumber numberWithInteger:parser.lineNumber];
+	NSNumber *columnNumber = [NSNumber numberWithInteger:parser.columnNumber];
+	[userInfo setObject:[NSString stringWithFormat:NSLocalizedString(@"Malformed XML document. Error at line %@:%@.", @""), lineNumber, columnNumber] forKey:NSLocalizedDescriptionKey];
+	[userInfo setObject:lineNumber forKey:@"LineNumber"];
+	[userInfo setObject:columnNumber forKey:@"ColumnNumber"];
+	return [NSError errorWithDomain:SMXMLDocumentErrorDomain code:1 userInfo:userInfo];
+}
+
 @implementation SMXMLElement
-@synthesize parent, name, value, children, attributes;
+@synthesize document, parent, name, value, children, attributes;
+
+- (id)initWithDocument:(SMXMLDocument *)aDocument {
+	self = [super init];
+	if (self) {
+		self.document = aDocument;
+	}
+	return self;
+}
 
 - (void)dealloc {
+	self.document = nil;
 	self.parent = nil;
 	self.name = nil;
 	self.value = nil;
@@ -61,7 +83,7 @@
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-	SMXMLElement *child = [[[SMXMLElement alloc] init] autorelease];
+	SMXMLElement *child = [[[SMXMLElement alloc] initWithDocument:self.document] autorelease];
 	child.parent = self;
 	child.name = elementName;
 	child.attributes = attributeDict;
@@ -79,7 +101,7 @@
 }
 
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
-	NSLog(@"ERROR at line %i col %i while parsing <%@>: %@. Value so far: %@", parser.lineNumber, parser.columnNumber, name, parseError, value);
+	self.document.error = SMXMLDocumentError(parser, parseError);
 }
 
 - (SMXMLElement *)childNamed:(NSString *)nodeName {
@@ -128,9 +150,9 @@
 @end
 
 @implementation SMXMLDocument
-@synthesize root;
+@synthesize root, error;
 
-- (id)initWithData:(NSData *)data {
+- (id)initWithData:(NSData *)data error:(NSError **)outError {
     self = [super init];
 	if (self) {
 		NSXMLParser *parser = [[[NSXMLParser alloc] initWithData:data] autorelease];
@@ -139,29 +161,37 @@
 		[parser setShouldReportNamespacePrefixes:YES];
 		[parser setShouldResolveExternalEntities:NO];
 		[parser parse];
+		
+		if (self.error) {
+			if (outError)
+				*outError = self.error;
+			[self release];
+			return nil;
+		}
 	}
 	return self;
 }
 
 - (void)dealloc {
 	self.root = nil;
+	self.error = nil;
 	[super dealloc];
 }
 
-+ (SMXMLDocument *)documentWithData:(NSData *)data {
-	return [[[SMXMLDocument alloc] initWithData:data] autorelease];
++ (SMXMLDocument *)documentWithData:(NSData *)data error:(NSError **)outError {
+	return [[[SMXMLDocument alloc] initWithData:data error:outError] autorelease];
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
 	
-	self.root = [[[SMXMLElement alloc] init] autorelease];
+	self.root = [[[SMXMLElement alloc] initWithDocument:self] autorelease];
 	root.name = elementName;
 	root.attributes = attributeDict;
 	[parser setDelegate:root];
 }
 
 - (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
-	NSLog(@"ERROR at line %i col %i while parsing root: %@", parser.lineNumber, parser.columnNumber, parseError);
+	self.error = SMXMLDocumentError(parser, parseError);
 }
 
 - (NSString *)description {
