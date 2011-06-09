@@ -28,12 +28,7 @@ extern NSString *const SMXMLDocumentErrorDomain;
 
 @class SMXMLDocument;
 
-#ifdef __IPHONE_4_0
 @interface SMXMLElement : NSObject<NSXMLParserDelegate> {
-#else
-@interface SMXMLElement : NSObject {
-#endif
-
 @private
 	SMXMLDocument *document; // nonretained
 	SMXMLElement *parent; // nonretained
@@ -61,12 +56,7 @@ extern NSString *const SMXMLDocumentErrorDomain;
 
 @end
 
-#ifdef __IPHONE_4_0
 @interface SMXMLDocument : NSObject<NSXMLParserDelegate> {
-#else
-@interface SMXMLDocument : NSObject {
-#endif
-	
 @private
 	SMXMLElement *root;
 	NSError *error;
