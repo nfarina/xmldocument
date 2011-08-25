@@ -56,13 +56,14 @@ extern NSString *const SMXMLDocumentErrorDomain;
 
 @end
 
-@interface SMXMLDocument : NSObject<NSXMLParserDelegate> {
+@interface SMXMLDocument : NSObject<NSCoding, NSXMLParserDelegate> {
 @private
 	SMXMLElement *root;
 	NSError *error;
 }
 
 @property (nonatomic, retain) SMXMLElement *root;
+@property (nonatomic, retain) NSData *data;
 @property (nonatomic, retain) NSError *error;
 
 - (id)initWithData:(NSData *)data error:(NSError **)outError;

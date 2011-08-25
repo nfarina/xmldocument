@@ -148,12 +148,13 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 @end
 
 @implementation SMXMLDocument
-@synthesize root, error;
+@synthesize root, data, error;
 
-- (id)initWithData:(NSData *)data error:(NSError **)outError {
+- (id)initWithData:(NSData *)xmlData error:(NSError **)outError {
     self = [super init];
 	if (self) {
-		NSXMLParser *parser = [[[NSXMLParser alloc] initWithData:data] autorelease];
+		self.data = xmlData;
+		NSXMLParser *parser = [[[NSXMLParser alloc] initWithData:self.data] autorelease];
 		[parser setDelegate:self];
 		[parser setShouldProcessNamespaces:YES];
 		[parser setShouldReportNamespacePrefixes:YES];
@@ -172,12 +173,27 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 
 - (void)dealloc {
 	self.root = nil;
+	self.data = nil;
 	self.error = nil;
 	[super dealloc];
 }
 
 + (SMXMLDocument *)documentWithData:(NSData *)data error:(NSError **)outError {
 	return [[[SMXMLDocument alloc] initWithData:data error:outError] autorelease];
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder {
+	if ([encoder allowsKeyedCoding])
+		[encoder encodeObject:self.data forKey:@"XMLData"];
+	else
+		[encoder encodeObject:self.data];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if ([decoder allowsKeyedCoding])
+		return [self initWithData:[decoder decodeObjectForKey:@"XMLData"] error:NULL];
+	else
+		return [self initWithData:[decoder decodeObject] error:NULL];
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
