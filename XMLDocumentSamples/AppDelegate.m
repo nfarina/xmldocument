@@ -9,9 +9,14 @@
 	NSString *sampleXML = [[NSBundle mainBundle] pathForResource:@"sample" ofType:@"xml"];
 	NSData *data = [NSData dataWithContentsOfFile:sampleXML];
 	
-	// create a new SMXMLDocument with the contents of sample.xml
-	SMXMLDocument *document = [SMXMLDocument documentWithData:data error:NULL];
-
+	// unarchive SMXMLDocument or create a new SMXMLDocument with the contents of sample.xml
+	NSString *archivePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingPathComponent:@"archive.plist"];
+	SMXMLDocument *document = [NSKeyedUnarchiver unarchiveObjectWithFile:archivePath];
+	if (!document)
+		document = [SMXMLDocument documentWithData:data error:NULL];
+	
+	[NSKeyedArchiver archiveRootObject:document toFile:archivePath];
+	
 	// demonstrate -description of document/element classes
 	NSLog(@"Document:\n %@", document);
 	
