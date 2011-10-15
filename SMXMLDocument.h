@@ -30,8 +30,8 @@ extern NSString *const SMXMLDocumentErrorDomain;
 
 @interface SMXMLElement : NSObject<NSXMLParserDelegate> {
 @private
-	SMXMLDocument *document; // nonretained
-	SMXMLElement *parent; // nonretained
+	__unsafe_unretained SMXMLDocument *document; // nonretained
+	__unsafe_unretained SMXMLElement *parent; // nonretained
 	NSString *name;
 	NSMutableString *value;
 	NSMutableArray *children;
