@@ -22,16 +22,6 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	return self;
 }
 
-- (void)dealloc {
-	self.document = nil;
-	self.parent = nil;
-	self.name = nil;
-	self.value = nil;
-	self.children = nil;
-	self.attributes = nil;
-	[super dealloc];
-}
-
 - (NSString *)descriptionWithIndent:(NSString *)indent {
 
 	NSMutableString *s = [NSMutableString string];
@@ -81,7 +71,7 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
-	SMXMLElement *child = [[[SMXMLElement alloc] initWithDocument:self.document] autorelease];
+	SMXMLElement *child = [[SMXMLElement alloc] initWithDocument:self.document];
 	child.parent = self;
 	child.name = elementName;
 	child.attributes = attributeDict;
@@ -114,7 +104,7 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	for (SMXMLElement *child in children)
 		if ([child.name isEqual:nodeName])
 			[array addObject:child];
-	return [[array copy] autorelease];
+	return [array copy];
 }
 
 - (SMXMLElement *)childWithAttribute:(NSString *)attributeName value:(NSString *)attributeValue {
@@ -153,7 +143,7 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 - (id)initWithData:(NSData *)data error:(NSError **)outError {
     self = [super init];
 	if (self) {
-		NSXMLParser *parser = [[[NSXMLParser alloc] initWithData:data] autorelease];
+		NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
 		[parser setDelegate:self];
 		[parser setShouldProcessNamespaces:YES];
 		[parser setShouldReportNamespacePrefixes:YES];
@@ -163,26 +153,19 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 		if (self.error) {
 			if (outError)
 				*outError = self.error;
-			[self release];
 			return nil;
 		}
 	}
 	return self;
 }
 
-- (void)dealloc {
-	self.root = nil;
-	self.error = nil;
-	[super dealloc];
-}
-
 + (SMXMLDocument *)documentWithData:(NSData *)data error:(NSError **)outError {
-	return [[[SMXMLDocument alloc] initWithData:data error:outError] autorelease];
+	return [[SMXMLDocument alloc] initWithData:data error:outError];
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
 	
-	self.root = [[[SMXMLElement alloc] initWithDocument:self] autorelease];
+	self.root = [[SMXMLElement alloc] initWithDocument:self];
 	root.name = elementName;
 	root.attributes = attributeDict;
 	[parser setDelegate:root];
