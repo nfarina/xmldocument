@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0173BC9C12E765430037CA90 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0173BC9B12E765430037CA90 /* AppDelegate.m */; };
-		0173BCAA12E7656F0037CA90 /* SMXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 0173BCA812E7656F0037CA90 /* SMXMLDocument.m */; };
 		0173BCC312E766160037CA90 /* sample.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0173BCC212E766160037CA90 /* sample.xml */; };
+		01B0AE9D144DE6A00020AF67 /* SMXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 0173BCA812E7656F0037CA90 /* SMXMLDocument.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
@@ -158,7 +158,7 @@
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
 				0173BC9C12E765430037CA90 /* AppDelegate.m in Sources */,
-				0173BCAA12E7656F0037CA90 /* SMXMLDocument.m in Sources */,
+				01B0AE9D144DE6A00020AF67 /* SMXMLDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +169,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -183,6 +184,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = XMLDocumentSamples_Prefix.pch;

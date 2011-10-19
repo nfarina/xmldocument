@@ -22,7 +22,7 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	return self;
 }
 
-- (NSString *)descriptionWithIndent:(NSString *)indent {
+- (NSString *)descriptionWithIndent:(NSString *)indent truncatedValues:(BOOL)truncated {
 
 	NSMutableString *s = [NSMutableString string];
 	[s appendFormat:@"%@<%@", indent, name];
@@ -30,26 +30,26 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	for (NSString *attribute in attributes)
 		[s appendFormat:@" %@=\"%@\"", attribute, [attributes objectForKey:attribute]];
 
-	NSString *trimVal = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-	if (trimVal.length > 25)
-		trimVal = [NSString stringWithFormat:@"%@…", [trimVal substringToIndex:25]];
+    NSString *valueOrTrimmed = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    if (truncated && valueOrTrimmed.length > 25)
+        valueOrTrimmed = [NSString stringWithFormat:@"%@…", [valueOrTrimmed substringToIndex:25]];
 	
 	if (children.count) {
 		[s appendString:@">\n"];
 		
 		NSString *childIndent = [indent stringByAppendingString:@"  "];
 		
-		if (trimVal.length)
-			[s appendFormat:@"%@%@\n", childIndent, trimVal];
+		if (valueOrTrimmed.length)
+			[s appendFormat:@"%@%@\n", childIndent, valueOrTrimmed];
 
 		for (SMXMLElement *child in children)
-			[s appendFormat:@"%@\n", [child descriptionWithIndent:childIndent]];
+			[s appendFormat:@"%@\n", [child descriptionWithIndent:childIndent truncatedValues:truncated]];
 		
 		[s appendFormat:@"%@</%@>", indent, name];
 	}
-	else if (trimVal.length) {
-		[s appendFormat:@">%@</%@>", trimVal, name];
+	else if (valueOrTrimmed.length) {
+		[s appendFormat:@">%@</%@>", valueOrTrimmed, name];
 	}
 	else [s appendString:@"/>"];
 	
@@ -57,7 +57,7 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 }
 
 - (NSString *)description {
-	return [self descriptionWithIndent:@""];
+	return [self descriptionWithIndent:@"" truncatedValues:YES];
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
@@ -177,6 +177,10 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 
 - (NSString *)description {
 	return root.description;
+}
+
+- (NSString *)fullDescription {
+    return [root descriptionWithIndent:@"" truncatedValues:NO];
 }
 
 @end
