@@ -155,6 +155,8 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 				*outError = self.error;
 			return nil;
 		}
+        else if (outError)
+            *outError = nil;
 	}
 	return self;
 }
