@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		014617C716989225003C2B97 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 014617C616989225003C2B97 /* Default-568h@2x.png */; };
 		0173BC9C12E765430037CA90 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0173BC9B12E765430037CA90 /* AppDelegate.m */; };
 		0173BCC312E766160037CA90 /* sample.xml in Resources */ = {isa = PBXBuildFile; fileRef = 0173BCC212E766160037CA90 /* sample.xml */; };
 		01B0AE9D144DE6A00020AF67 /* SMXMLDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 0173BCA812E7656F0037CA90 /* SMXMLDocument.m */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		014617C616989225003C2B97 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		0173BC9A12E765430037CA90 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		0173BC9B12E765430037CA90 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		0173BCA812E7656F0037CA90 /* SMXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SMXMLDocument.m; path = ../SMXMLDocument.m; sourceTree = SOURCE_ROOT; };
@@ -78,6 +80,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				014617C616989225003C2B97 /* Default-568h@2x.png */,
 				0173BC9912E7653B0037CA90 /* XML Document */,
 				28EEBF621118D79A00187D67 /* Shared */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -149,6 +152,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0173BCC312E766160037CA90 /* sample.xml in Resources */,
+				014617C716989225003C2B97 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
