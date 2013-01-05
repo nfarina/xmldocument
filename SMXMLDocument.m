@@ -114,11 +114,7 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	for (SMXMLElement *child in children)
 		if ([child.name isEqual:nodeName])
 			[array addObject:child];
-  
-	if([array count] > 0)
-		return [[array copy] autorelease];
-	else
-		return nil;
+    return array.count ? [[array copy] autorelease] : nil;
 }
 
 - (SMXMLElement *)childWithAttribute:(NSString *)attributeName value:(NSString *)attributeValue {
