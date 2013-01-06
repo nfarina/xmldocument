@@ -22,6 +22,15 @@
  THE SOFTWARE. 
 */
 
+/*
+ 
+ SMXMLDocument
+ -------------
+ Created by Nick Farina (nfarina@gmail.com)
+ Version 1.0
+ 
+ */
+
 // SMXMLDocument is a very handy lightweight XML parser for iOS.
 
 extern NSString *const SMXMLDocumentErrorDomain;

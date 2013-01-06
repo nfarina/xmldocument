@@ -19,6 +19,7 @@
 
 /* Begin PBXFileReference section */
 		014617C616989225003C2B97 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		014617DB1698FA5B003C2B97 /* SMXMLDocument.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = SMXMLDocument.podspec; path = ../SMXMLDocument.podspec; sourceTree = "<group>"; };
 		0173BC9A12E765430037CA90 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		0173BC9B12E765430037CA90 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		0173BCA812E7656F0037CA90 /* SMXMLDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SMXMLDocument.m; path = ../SMXMLDocument.m; sourceTree = SOURCE_ROOT; };
@@ -67,6 +68,8 @@
 		28EEBF621118D79A00187D67 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				014617C616989225003C2B97 /* Default-568h@2x.png */,
+				014617DB1698FA5B003C2B97 /* SMXMLDocument.podspec */,
 				0173BCC212E766160037CA90 /* sample.xml */,
 				0173BC9A12E765430037CA90 /* AppDelegate.h */,
 				0173BC9B12E765430037CA90 /* AppDelegate.m */,
@@ -80,7 +83,6 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				014617C616989225003C2B97 /* Default-568h@2x.png */,
 				0173BC9912E7653B0037CA90 /* XML Document */,
 				28EEBF621118D79A00187D67 /* Shared */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
