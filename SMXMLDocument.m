@@ -59,6 +59,10 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	return [self descriptionWithIndent:@"" truncatedValues:YES];
 }
 
+- (NSString *)fullDescription {
+	return [self descriptionWithIndent:@"" truncatedValues:NO];
+}
+
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
 	
 	if (!string) return;
@@ -180,7 +184,7 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 }
 
 - (NSString *)fullDescription {
-    return [self.root descriptionWithIndent:@"" truncatedValues:NO];
+	return self.root.fullDescription;
 }
 
 @end
