@@ -54,6 +54,7 @@ extern NSString *const SMXMLDocumentErrorDomain;
 - (NSString *)attributeNamed:(NSString *)name;
 - (SMXMLElement *)descendantWithPath:(NSString *)path;
 - (NSString *)valueWithPath:(NSString *)path;
+- (NSString *)fullDescription;
 
 @end
 
