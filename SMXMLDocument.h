@@ -54,7 +54,7 @@ extern NSString *const SMXMLDocumentErrorDomain;
 - (NSString *)attributeNamed:(NSString *)name;
 - (SMXMLElement *)descendantWithPath:(NSString *)path;
 - (NSString *)valueWithPath:(NSString *)path;
-- (NSString *)fullDescription;
+- (NSString *)fullDescription; // like -description, this writes the document out to an XML string, but doesn't truncate the node values.
 
 @end
 
@@ -65,8 +65,8 @@ extern NSString *const SMXMLDocumentErrorDomain;
 
 - (id)initWithData:(NSData *)data error:(NSError **)outError;
 
-- (NSString *)fullDescription; // like -description, this writes the document out to an XML string, but doesn't truncate the node values.
-
 + (SMXMLDocument *)documentWithData:(NSData *)data error:(NSError **)outError;
+
+- (NSString *)fullDescription;
 
 @end
