@@ -55,6 +55,7 @@ extern NSString *const SMXMLDocumentErrorDomain;
 - (SMXMLElement *)descendantWithPath:(NSString *)path;
 - (NSString *)valueWithPath:(NSString *)path;
 - (NSString *)fullDescription; // like -description, this writes the document out to an XML string, but doesn't truncate the node values.
+- (NSString *)encodedDescription; // like -fullDescription, but this does HTML encoding of element content
 
 @end
 
@@ -68,5 +69,6 @@ extern NSString *const SMXMLDocumentErrorDomain;
 + (SMXMLDocument *)documentWithData:(NSData *)data error:(NSError **)outError;
 
 - (NSString *)fullDescription;
+- (NSString *)encodedDescription;
 
 @end

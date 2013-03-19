@@ -21,18 +21,23 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	return self;
 }
 
-- (NSString *)descriptionWithIndent:(NSString *)indent truncatedValues:(BOOL)truncated {
+- (NSString *)descriptionWithIndent:(NSString *)indent truncatedValues:(BOOL)truncated encoded:(BOOL)encode {
 
 	NSMutableString *s = [NSMutableString string];
 	[s appendFormat:@"%@<%@", indent, self.name];
 	
-	for (NSString *attribute in self.attributes)
-		[s appendFormat:@" %@=\"%@\"", attribute, [self.attributes objectForKey:attribute]];
+	for (NSString *attribute in self.attributes) {
+		NSString *attributeValue = [self.attributes objectForKey:attribute];
+		[s appendFormat:@" %@=\"%@\"", attribute, encode ? [self encodeString:attributeValue] : attributeValue];
+	}
 
-    NSString *valueOrTrimmed = [self.value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+	NSString *valueOrTrimmed = [self.value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
-    if (truncated && valueOrTrimmed.length > 25)
-        valueOrTrimmed = [NSString stringWithFormat:@"%@…", [valueOrTrimmed substringToIndex:25]];
+	if (truncated && valueOrTrimmed.length > 25)
+		valueOrTrimmed = [NSString stringWithFormat:@"%@…", [valueOrTrimmed substringToIndex:25]];
+	
+	if (encode)
+		valueOrTrimmed = [self encodeString:valueOrTrimmed];
 	
 	if (self.children.count) {
 		[s appendString:@">\n"];
@@ -43,7 +48,7 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 			[s appendFormat:@"%@%@\n", childIndent, valueOrTrimmed];
 
 		for (SMXMLElement *child in self.children)
-			[s appendFormat:@"%@\n", [child descriptionWithIndent:childIndent truncatedValues:truncated]];
+			[s appendFormat:@"%@\n", [child descriptionWithIndent:childIndent truncatedValues:truncated encoded:encode]];
 		
 		[s appendFormat:@"%@</%@>", indent, self.name];
 	}
@@ -55,12 +60,32 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	return s;	
 }
 
+- (NSString *)encodeString:(NSString *)string
+{
+	if (!string.length)
+		return string;
+
+	NSMutableString *encoded = [NSMutableString stringWithString:string];
+
+	[encoded replaceOccurrencesOfString:@"&"  withString:@"&amp;"  options:NSLiteralSearch range:NSMakeRange(0, [encoded length])];
+	[encoded replaceOccurrencesOfString:@"\"" withString:@"&quot;" options:NSLiteralSearch range:NSMakeRange(0, [encoded length])];
+	[encoded replaceOccurrencesOfString:@"'"  withString:@"&#x27;" options:NSLiteralSearch range:NSMakeRange(0, [encoded length])];
+	[encoded replaceOccurrencesOfString:@">"  withString:@"&gt;"   options:NSLiteralSearch range:NSMakeRange(0, [encoded length])];
+	[encoded replaceOccurrencesOfString:@"<"  withString:@"&lt;"   options:NSLiteralSearch range:NSMakeRange(0, [encoded length])];
+
+	return encoded;
+}
+
 - (NSString *)description {
-	return [self descriptionWithIndent:@"" truncatedValues:YES];
+	return [self descriptionWithIndent:@"" truncatedValues:YES encoded:NO];
 }
 
 - (NSString *)fullDescription {
-	return [self descriptionWithIndent:@"" truncatedValues:NO];
+	return [self descriptionWithIndent:@"" truncatedValues:NO encoded:NO];
+}
+
+- (NSString *)encodedDescription {
+	return [self descriptionWithIndent:@"" truncatedValues:NO encoded:YES];
 }
 
 - (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
@@ -185,6 +210,10 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 
 - (NSString *)fullDescription {
 	return self.root.fullDescription;
+}
+
+- (NSString *)encodedDescription {
+	return self.root.encodedDescription;
 }
 
 @end
