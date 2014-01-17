@@ -17,14 +17,6 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	return [NSError errorWithDomain:SMXMLDocumentErrorDomain code:1 userInfo:userInfo];
 }
 
-@interface SMXMLElementChildren ()
-@property (nonatomic, weak) SMXMLElement *element;
-@end
-
-@interface SMXMLElementValueFinder ()
-@property (nonatomic, weak) SMXMLElement *element;
-@end
-
 @implementation SMXMLElement
 
 - (id)initWithDocument:(SMXMLDocument *)document {
@@ -139,26 +131,6 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	return nil;
 }
 
-- (SMXMLElement *)objectAtIndexedSubscript:(NSUInteger)index {
-    return self.children[index];
-}
-            
-- (SMXMLElement *)objectForKeyedSubscript:(NSString *)childName {
-    return [self childNamed:childName];
-}
-
-- (SMXMLElementChildren *)all {
-    SMXMLElementChildren *all = [SMXMLElementChildren new];
-    all.element = self;
-    return all;
-}
-
-- (SMXMLElementValueFinder *)values {
-    SMXMLElementValueFinder *values = [SMXMLElementValueFinder new];
-    values.element = self;
-    return values;
-}
-
 - (NSArray *)childrenNamed:(NSString *)nodeName {
 	NSMutableArray *array = [NSMutableArray array];
 	for (SMXMLElement *child in self.children)
@@ -197,22 +169,6 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 
 @end
 
-@implementation SMXMLElementChildren
-
-- (NSArray *)objectForKeyedSubscript:(NSString *)childrenNamed {
-    return [self.element childrenNamed:childrenNamed];
-}
-
-@end
-
-@implementation SMXMLElementValueFinder
-
-- (NSString *)objectForKeyedSubscript:(NSString *)path {
-    return [self.element valueWithPath:path];
-}
-
-@end
-
 @interface SMXMLDocument ()
 @property (nonatomic, assign) BOOL parsedRoot;
 @end
@@ -220,9 +176,7 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 @implementation SMXMLDocument
 
 - (id)initWithData:(NSData *)data error:(NSError **)outError {
-    if (self = [super init]) {
-        
-        self.document = self;
+    if (self = [super initWithDocument:self]) {
         
 		NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
         parser.delegate = self;

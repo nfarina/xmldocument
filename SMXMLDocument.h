@@ -1,7 +1,7 @@
 /*
  The MIT License
  
- Copyright (c) 2011 Spotlight Mobile
+ Copyright (c) 2014 Nick Farina
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@
  SMXMLDocument
  -------------
  Created by Nick Farina (nfarina@gmail.com)
- Version 1.0
+ Version 1.1
  
  */
 
@@ -36,6 +36,10 @@
 extern NSString *const SMXMLDocumentErrorDomain;
 
 @class SMXMLDocument, SMXMLElementChildren, SMXMLElementValueFinder;
+
+//
+// XMLElement class; the workhorse.
+//
 
 @interface SMXMLElement : NSObject<NSXMLParserDelegate>
 
@@ -50,36 +54,26 @@ extern NSString *const SMXMLDocumentErrorDomain;
 @property (nonatomic, readonly) SMXMLElementValueFinder *values;
 
 - (id)initWithDocument:(SMXMLDocument *)document;
+
+//
+// Method-based document traversing
+//
+
 - (SMXMLElement *)childNamed:(NSString *)name;
 - (NSArray *)childrenNamed:(NSString *)name;
 - (SMXMLElement *)childWithAttribute:(NSString *)attributeName value:(NSString *)attributeValue;
 - (NSString *)attributeNamed:(NSString *)name;
 - (SMXMLElement *)descendantWithPath:(NSString *)path;
 - (NSString *)valueWithPath:(NSString *)path;
+
 - (NSString *)fullDescription; // like -description, this writes the document out to an XML string, but doesn't truncate the node values.
 - (NSString *)encodedDescription; // like -fullDescription, but this does HTML encoding of element content
 
-// Literal access - personElement[0] is the same as writing [personElement.children objectAtIndex:0]
-- (SMXMLElement *)objectAtIndexedSubscript:(NSUInteger)index;
-
-// Literal access - personElement[@"FirstName"] is the same as writing [personElement childNamed:@"FirstName"]
-- (SMXMLElement *)objectForKeyedSubscript:(NSString *)childName;
-
 @end
 
-@interface SMXMLElementChildren : NSObject
-
-// Literal access - booksElement.all[@"book"] is the same as writing [booksElement childrenNamed:@"book"]
-- (NSArray *)objectForKeyedSubscript:(NSString *)childredNamed; // Array of SMXMLElement
-
-@end
-
-@interface SMXMLElementValueFinder : NSObject
-
-// Literal access - book.values[@"cover.title"] is the same as writing [book valueWithPath:@"cover.title"]
-- (NSString *)objectForKeyedSubscript:(NSString *)path; // NSString
-
-@end
+//
+// XMLDocument class; simply adds methods to parse an XML document and remember any errors.
+//
 
 @interface SMXMLDocument : SMXMLElement
 

@@ -12,7 +12,7 @@
 	// create a new SMXMLDocument with the contents of sample.xml
     NSError *error;
 	SMXMLDocument *document = [SMXMLDocument documentWithData:data error:&error];
-
+    
     // check for errors
     if (error) {
         NSLog(@"Error while parsing the document: %@", error);
@@ -23,21 +23,23 @@
 	NSLog(@"Document:\n %@", document);
 	
 	// Pull out the <books> node
-	SMXMLElement *books = document[@"books"];
+	SMXMLElement *books = [document childNamed:@"books"];
 	
 	// Look through <books> children of type <book>
-	for (SMXMLElement *book in books.all[@"book"]) {
+	for (SMXMLElement *book in [books childrenNamed:@"book"]) {
 		
 		// demonstrate common cases of extracting XML data
-		NSString *isbn = book.attributes[@"isbn"]; // XML attribute
-		NSString *title = book.values[@"title"]; // child node value
-		float price = book.values[@"price.usd"].floatValue; // child node value (2 levels deep)
+		NSString *isbn = [book attributeNamed:@"isbn"]; // XML attribute
+		NSString *title = [book valueWithPath:@"title"]; // child node value
+		float price = [book valueWithPath:@"price.usd"].floatValue; // child node value (two levels deep)
 		
 		// show off some KVC magic
-		NSArray *authors = [book[@"authors"].children valueForKey:@"value"];
+		NSArray *authors = [[book childNamed:@"authors"].children valueForKey:@"value"];
 		
-		NSLog(@"Found a book!\n ISBN: %@ \n Title: %@ \n Price: $%0.2f \n Authors: %@", isbn, title, price, authors);
+		NSLog(@"Found a book!\n ISBN: %@ \n Title: %@ \n Price: %f \n Authors: %@", isbn, title, price, authors);
 	}
+    
+    [self performSelector:@selector(showCount) withObject:nil afterDelay:0.1];
 }
 
 @end
