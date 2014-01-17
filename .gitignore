@@ -7,6 +7,5 @@ build/
 *.mode*
 *.pbxuser
 *~.nib
-
-# Xcode 4
-xcuserdata/
+*.xccheckout
+xcuserdata
