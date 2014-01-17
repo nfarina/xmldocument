@@ -17,11 +17,18 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	return [NSError errorWithDomain:SMXMLDocumentErrorDomain code:1 userInfo:userInfo];
 }
 
+@interface SMXMLElementChildren ()
+@property (nonatomic, weak) SMXMLElement *element;
+@end
+
+@interface SMXMLElementValueFinder ()
+@property (nonatomic, weak) SMXMLElement *element;
+@end
+
 @implementation SMXMLElement
 
 - (id)initWithDocument:(SMXMLDocument *)document {
-	self = [super init];
-	if (self)
+	if (self = [super init])
 		self.document = document;
 	return self;
 }
@@ -132,6 +139,26 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 	return nil;
 }
 
+- (SMXMLElement *)objectAtIndexedSubscript:(NSUInteger)index {
+    return self.children[index];
+}
+            
+- (SMXMLElement *)objectForKeyedSubscript:(NSString *)childName {
+    return [self childNamed:childName];
+}
+
+- (SMXMLElementChildren *)all {
+    SMXMLElementChildren *all = [SMXMLElementChildren new];
+    all.element = self;
+    return all;
+}
+
+- (SMXMLElementValueFinder *)values {
+    SMXMLElementValueFinder *values = [SMXMLElementValueFinder new];
+    values.element = self;
+    return values;
+}
+
 - (NSArray *)childrenNamed:(NSString *)nodeName {
 	NSMutableArray *array = [NSMutableArray array];
 	for (SMXMLElement *child in self.children)
@@ -170,16 +197,38 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 
 @end
 
+@implementation SMXMLElementChildren
+
+- (NSArray *)objectForKeyedSubscript:(NSString *)childrenNamed {
+    return [self.element childrenNamed:childrenNamed];
+}
+
+@end
+
+@implementation SMXMLElementValueFinder
+
+- (NSString *)objectForKeyedSubscript:(NSString *)path {
+    return [self.element valueWithPath:path];
+}
+
+@end
+
+@interface SMXMLDocument ()
+@property (nonatomic, assign) BOOL parsedRoot;
+@end
+
 @implementation SMXMLDocument
 
 - (id)initWithData:(NSData *)data error:(NSError **)outError {
-    self = [super init];
-	if (self) {
+    if (self = [super init]) {
+        
+        self.document = self;
+        
 		NSXMLParser *parser = [[NSXMLParser alloc] initWithData:data];
-		[parser setDelegate:self];
-		[parser setShouldProcessNamespaces:YES];
-		[parser setShouldReportNamespacePrefixes:YES];
-		[parser setShouldResolveExternalEntities:NO];
+        parser.delegate = self;
+        parser.shouldProcessNamespaces = YES;
+        parser.shouldReportNamespacePrefixes = YES;
+        parser.shouldResolveExternalEntities = NO;
 		[parser parse];
 		
 		if (self.error) {
@@ -199,26 +248,14 @@ static NSError *SMXMLDocumentError(NSXMLParser *parser, NSError *parseError) {
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName attributes:(NSDictionary *)attributeDict {
 	
-	self.root = [[SMXMLElement alloc] initWithDocument:self];
-	self.root.name = elementName;
-	self.root.attributes = attributeDict;
-	[parser setDelegate:self.root];
-}
-
-- (void)parser:(NSXMLParser *)parser parseErrorOccurred:(NSError *)parseError {
-	self.error = SMXMLDocumentError(parser, parseError);
-}
-
-- (NSString *)description {
-	return self.root.description;
-}
-
-- (NSString *)fullDescription {
-	return self.root.fullDescription;
-}
-
-- (NSString *)encodedDescription {
-	return self.root.encodedDescription;
+    if (!self.parsedRoot) {
+        self.name = elementName;
+        self.attributes = attributeDict;
+        self.parsedRoot = YES;
+    }
+    else {
+        [super parser:parser didStartElement:elementName namespaceURI:namespaceURI qualifiedName:qName attributes:attributeDict];
+    }
 }
 
 @end

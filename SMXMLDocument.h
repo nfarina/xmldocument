@@ -35,7 +35,7 @@
 
 extern NSString *const SMXMLDocumentErrorDomain;
 
-@class SMXMLDocument;
+@class SMXMLDocument, SMXMLElementChildren, SMXMLElementValueFinder;
 
 @interface SMXMLElement : NSObject<NSXMLParserDelegate>
 
@@ -46,6 +46,8 @@ extern NSString *const SMXMLDocumentErrorDomain;
 @property (nonatomic, retain) NSArray *children;
 @property (nonatomic, retain) NSDictionary *attributes;
 @property (nonatomic, readonly) SMXMLElement *firstChild, *lastChild;
+@property (nonatomic, readonly) SMXMLElementChildren *all;
+@property (nonatomic, readonly) SMXMLElementValueFinder *values;
 
 - (id)initWithDocument:(SMXMLDocument *)document;
 - (SMXMLElement *)childNamed:(NSString *)name;
@@ -57,18 +59,34 @@ extern NSString *const SMXMLDocumentErrorDomain;
 - (NSString *)fullDescription; // like -description, this writes the document out to an XML string, but doesn't truncate the node values.
 - (NSString *)encodedDescription; // like -fullDescription, but this does HTML encoding of element content
 
+// Literal access - personElement[0] is the same as writing [personElement.children objectAtIndex:0]
+- (SMXMLElement *)objectAtIndexedSubscript:(NSUInteger)index;
+
+// Literal access - personElement[@"FirstName"] is the same as writing [personElement childNamed:@"FirstName"]
+- (SMXMLElement *)objectForKeyedSubscript:(NSString *)childName;
+
 @end
 
-@interface SMXMLDocument : NSObject<NSXMLParserDelegate>
+@interface SMXMLElementChildren : NSObject
 
-@property (nonatomic, retain) SMXMLElement *root;
+// Literal access - booksElement.all[@"book"] is the same as writing [booksElement childrenNamed:@"book"]
+- (NSArray *)objectForKeyedSubscript:(NSString *)childredNamed; // Array of SMXMLElement
+
+@end
+
+@interface SMXMLElementValueFinder : NSObject
+
+// Literal access - book.values[@"cover.title"] is the same as writing [book valueWithPath:@"cover.title"]
+- (NSString *)objectForKeyedSubscript:(NSString *)path; // NSString
+
+@end
+
+@interface SMXMLDocument : SMXMLElement
+
 @property (nonatomic, retain) NSError *error;
 
 - (id)initWithData:(NSData *)data error:(NSError **)outError;
 
 + (SMXMLDocument *)documentWithData:(NSData *)data error:(NSError **)outError;
-
-- (NSString *)fullDescription;
-- (NSString *)encodedDescription;
 
 @end
