@@ -38,8 +38,6 @@
 		
 		NSLog(@"Found a book!\n ISBN: %@ \n Title: %@ \n Price: %f \n Authors: %@", isbn, title, price, authors);
 	}
-    
-    [self performSelector:@selector(showCount) withObject:nil afterDelay:0.1];
 }
 
 @end
