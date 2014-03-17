@@ -22,30 +22,29 @@
  THE SOFTWARE. 
 */
 
-/*
- 
- SMXMLDocument
- -------------
- Created by Nick Farina (nfarina@gmail.com)
- Version 1.0
- 
- */
-
 // SMXMLDocument is a very handy lightweight XML parser for iOS.
 
 extern NSString *const SMXMLDocumentErrorDomain;
 
 @class SMXMLDocument;
 
-@interface SMXMLElement : NSObject<NSXMLParserDelegate>
+@interface SMXMLElement : NSObject<NSXMLParserDelegate> {
+@private
+	SMXMLDocument *document; // nonretained
+	SMXMLElement *parent; // nonretained
+	NSString *name;
+	NSMutableString *value;
+	NSMutableArray *children;
+	NSDictionary *attributes;
+}
 
-@property (nonatomic, weak) SMXMLDocument *document;
-@property (nonatomic, weak) SMXMLElement *parent;
+@property (nonatomic, assign) SMXMLDocument *document;
+@property (nonatomic, assign) SMXMLElement *parent;
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, retain) NSString *value;
 @property (nonatomic, retain) NSArray *children;
-@property (nonatomic, retain) NSDictionary *attributes;
 @property (nonatomic, readonly) SMXMLElement *firstChild, *lastChild;
+@property (nonatomic, retain) NSDictionary *attributes;
 
 - (id)initWithDocument:(SMXMLDocument *)document;
 - (SMXMLElement *)childNamed:(NSString *)name;
@@ -54,12 +53,14 @@ extern NSString *const SMXMLDocumentErrorDomain;
 - (NSString *)attributeNamed:(NSString *)name;
 - (SMXMLElement *)descendantWithPath:(NSString *)path;
 - (NSString *)valueWithPath:(NSString *)path;
-- (NSString *)fullDescription; // like -description, this writes the document out to an XML string, but doesn't truncate the node values.
-- (NSString *)encodedDescription; // like -fullDescription, but this does HTML encoding of element content
 
 @end
 
-@interface SMXMLDocument : NSObject<NSXMLParserDelegate>
+@interface SMXMLDocument : NSObject<NSXMLParserDelegate> {
+@private
+	SMXMLElement *root;
+	NSError *error;
+}
 
 @property (nonatomic, retain) SMXMLElement *root;
 @property (nonatomic, retain) NSError *error;
@@ -67,8 +68,5 @@ extern NSString *const SMXMLDocumentErrorDomain;
 - (id)initWithData:(NSData *)data error:(NSError **)outError;
 
 + (SMXMLDocument *)documentWithData:(NSData *)data error:(NSError **)outError;
-
-- (NSString *)fullDescription;
-- (NSString *)encodedDescription;
 
 @end
